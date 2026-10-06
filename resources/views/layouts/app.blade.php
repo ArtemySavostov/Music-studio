@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#183d36">
         <title>{{ $title ?? 'Студии' }} — Тон</title>
-        <link rel="stylesheet" href="{{ asset('css/studio.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/studio.css') }}?v={{ filemtime(public_path('css/studio.css')) }}">
         @livewireStyles
     </head>
     <body>

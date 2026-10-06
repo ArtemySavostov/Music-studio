@@ -5,6 +5,7 @@
     --muted: #747b72;
     --line: #dedfd5;
     --cream: #e7edbd;
+    --ease-out: cubic-bezier(.22,1,.36,1);
 }
 
 * {
@@ -151,8 +152,20 @@ h3 {
     padding: 15px 25px;
     border-radius: 7px;
     font-weight: 500;
-    transition: background .2s,transform .2s;
+    transition: background .2s,transform .25s var(--ease-out),box-shadow .25s;
     line-height: 1.3;
+}
+
+.button:active:not(:disabled) {
+    transform: translateY(1px) scale(.98);
+}
+
+.button > span[aria-hidden] {
+    transition: transform .3s var(--ease-out);
+}
+
+.button:hover > span[aria-hidden] {
+    transform: translate(3px,-3px);
 }
 
 .button:hover {
@@ -194,6 +207,15 @@ h3 {
 .hero-copy {
     padding: 48px;
 }
+
+.hero-copy > * {
+    animation: content-enter .75s var(--ease-out) both;
+}
+
+.hero-copy > :nth-child(2) { animation-delay: .08s; }
+.hero-copy > :nth-child(3) { animation-delay: .16s; }
+.hero-copy > :nth-child(4) { animation-delay: .24s; }
+.hero-copy > :nth-child(5) { animation-delay: .32s; }
 
 .eyebrow {
     font-size: 10px;
@@ -246,6 +268,7 @@ h3 {
     display: grid;
     place-items: center;
     transform: rotate(-22deg);
+    animation: record-spin 48s linear infinite;
 }
 
 .record-label {
@@ -357,6 +380,8 @@ h3 {
     border: 1px solid var(--line);
     border-radius: 10px;
     overflow: hidden;
+    transition: translate .35s var(--ease-out),box-shadow .35s,border-color .35s;
+    animation: content-enter .55s var(--ease-out) both;
 }
 
 .studio-art {
@@ -398,6 +423,7 @@ h3 {
     height: 170px;
     gap: 3px;
     filter: drop-shadow(6px 12px 10px #1c332c30);
+    transition: transform .6s var(--ease-out);
 }
 
 .keys i {
@@ -467,6 +493,7 @@ h3 {
     text-align: center;
     line-height: 34px;
     font-size: 19px;
+    transition: background .2s,border-color .2s,transform .3s var(--ease-out);
 }
 
 .circle-link:hover {
@@ -496,6 +523,31 @@ h3 {
 .steps p {
     font-size: 13px;
     color: var(--muted);
+}
+
+@supports (animation-timeline: view()) {
+    .studio-card,.steps > div {
+        animation: content-enter linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 25%;
+    }
+}
+
+@media (hover:hover) and (pointer:fine) {
+    .studio-card:hover,.studio-card:focus-within {
+        translate: 0 -5px;
+        border-color: #bbc7ae;
+        box-shadow: 0 16px 30px #233e3512;
+    }
+
+    .studio-card:hover .keys {
+        transform: rotate(-22deg) scale(1.035);
+    }
+
+    .circle-link:hover {
+        transform: translate(2px,-2px);
+        border-color: #acb899;
+    }
 }
 
 .footer {
@@ -607,10 +659,12 @@ input:not([type=checkbox]),select {
     color: var(--ink);
     width: 100%;
     min-width: 0;
+    transition: border-color .2s,box-shadow .2s,background .2s;
 }
 
 input:focus,select:focus {
     border-color: var(--green);
+    box-shadow: 0 0 0 3px #193e340c;
 }
 
 .error {
@@ -624,6 +678,7 @@ input:focus,select:focus {
     padding: 12px;
     color: #9c3226;
     font-size: 13px;
+    animation: feedback-enter .25s var(--ease-out) both;
 }
 
 .auth-switch {
@@ -760,6 +815,7 @@ input:focus,select:focus {
     border: 1px solid #bbcca7;
     border-radius: 7px;
     margin: 15px 0;
+    animation: feedback-enter .35s var(--ease-out) both;
 }
 
 .booking-list {
@@ -772,6 +828,22 @@ input:focus,select:focus {
     gap: 25px;
     padding: 24px 0;
     border-bottom: 1px solid var(--line);
+    animation: content-enter .45s var(--ease-out) both;
+}
+
+@keyframes record-spin {
+    from { transform: rotate(-22deg); }
+    to { transform: rotate(338deg); }
+}
+
+@keyframes content-enter {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes feedback-enter {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .date-tile {
@@ -1108,6 +1180,7 @@ input:focus,select:focus {
 
     *,*:before,*:after {
         transition: none!important;
+        animation: none!important;
     }
 
 }
