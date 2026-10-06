@@ -10,7 +10,7 @@
     </head>
     <body x-data="{ connectionFailed: false }" @studio-connection.window="connectionFailed = $event.detail.failed">
         <a class="skip-link" href="#main">Перейти к содержимому</a>
-        <header class="header">
+        <header class="header glass">
             <a class="brand" href="{{ route('home') }}" aria-label="Тон — главная">
                 <span class="brand-mark">т.</span>
                 тон
@@ -20,6 +20,10 @@
                 <a href="{{ route('home') }}" @if(request()->routeIs('home')) aria-current="page" @endif>Студии</a>
                 @auth
                     <a href="{{ route('bookings') }}" @if(request()->routeIs('bookings')) aria-current="page" @endif>Мои бронирования</a>
+                @endauth
+            </nav>
+            <div class="header-account">
+                @auth
                     <span class="user-name">{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -31,7 +35,7 @@
                         <span aria-hidden="true">↗</span>
                     </a>
                 @endauth
-            </nav>
+            </div>
         </header>
         <main id="main" class="container">
             <div class="connection-notice" x-show="connectionFailed" x-cloak role="alert">

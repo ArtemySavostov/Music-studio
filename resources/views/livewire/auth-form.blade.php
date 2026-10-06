@@ -11,12 +11,12 @@
         <p>Выбирайте студии, планируйте репетиции и храните все бронирования в одном месте.</p>
         <span class="auth-note" aria-hidden="true">♫</span>
     </section>
-    <section class="auth-card">
+    <section class="auth-card glass glass--dense">
         <p class="eyebrow">ЛИЧНЫЙ КАБИНЕТ</p>
         <h2>{{ $register ? 'Давайте знакомиться' : 'С возвращением' }}</h2>
         <p class="muted">{{ $register ? 'Создайте аккаунт для бронирования студий.' : 'Войдите, чтобы продолжить.' }}</p>
         @if($draftStudio)
-            <div class="auth-draft"><p class="eyebrow">ПРОДОЛЖИМ ПОСЛЕ ВХОДА</p><strong>{{ $draftStudio->name }}</strong><p>{{ \Illuminate\Support\Carbon::parse($draft['date'])->locale('ru')->translatedFormat('j F') }} · {{ $draft['start'] }}:00–{{ $draft['end'] }}:00</p><span class="muted">Выбор сохранён. Бронь подтвердите после входа.</span></div>
+            <div class="auth-draft glass-inset"><p class="eyebrow">ПРОДОЛЖИМ ПОСЛЕ ВХОДА</p><strong>{{ $draftStudio->name }}</strong><p>{{ \Illuminate\Support\Carbon::parse($draft['date'])->locale('ru')->translatedFormat('j F') }} · {{ $draft['start'] }}:00–{{ $draft['end'] }}:00</p><span class="muted">Выбор сохранён. Бронь подтвердите после входа.</span></div>
         @endif
         <form wire:submit="submit" class="form-stack">
             @if($register)

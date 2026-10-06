@@ -5,7 +5,7 @@
     @if($nextBooking)
         <section class="next-booking"><div><p class="eyebrow">{{ $nextBooking->starts_at->isPast() ? 'РЕПЕТИЦИЯ ИДЁТ' : 'БЛИЖАЙШАЯ РЕПЕТИЦИЯ' }}</p><h2>{{ $nextBooking->studio?->name ?? 'Студия недоступна' }}</h2><p>{{ $nextBooking->starts_at->locale('ru')->translatedFormat('j F, D') }} · {{ $nextBooking->starts_at->format('H:i') }}–{{ $nextBooking->ends_at->format('H:i') }}</p></div><strong>{{ number_format((float) $nextBooking->total_price, 2, ',', ' ') }} ₽</strong></section>
     @endif
-    <div class="booking-tabs" role="group" aria-label="Разделы бронирований">
+    <div class="booking-tabs glass" role="group" aria-label="Разделы бронирований">
         <button type="button" class="tab-button {{ $tab !== 'history' ? 'selected' : '' }}" wire:click="$set('tab', 'upcoming')" aria-pressed="{{ $tab !== 'history' ? 'true' : 'false' }}">Предстоящие <span>{{ $upcomingCount }}</span></button>
         <button type="button" class="tab-button {{ $tab === 'history' ? 'selected' : '' }}" wire:click="$set('tab', 'history')" aria-pressed="{{ $tab === 'history' ? 'true' : 'false' }}">История <span>{{ $historyCount }}</span></button>
     </div>

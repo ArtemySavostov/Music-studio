@@ -12,14 +12,14 @@
             <div class="features"><span>◷ 10:00–22:00</span><span>♫ {{ $studio->has_piano ? 'Есть пианино' : 'Без пианино' }}</span><span>От 1 часа</span></div>
             <div class="detail-note"><h2>Время для вашего звучания</h2><p>Выберите дату и свободные часы. Итоговая стоимость появится сразу, а подтверждённая репетиция сохранится в вашем кабинете.</p></div>
         </section>
-        <aside class="booking-panel" id="booking-form" x-ref="panel" aria-label="Выбор времени репетиции">
+        <aside class="booking-panel glass glass--dense" id="booking-form" x-ref="panel" aria-label="Выбор времени репетиции">
             <p class="eyebrow">ВАША РЕПЕТИЦИЯ</p>
             <h2>{{ number_format((float) $studio->price_per_hour, 2, ',', ' ') }} ₽ <small>/ час</small></h2>
             <p class="muted">Свободные часы — перед вами</p>
             <form wire:submit="book" class="form-stack">
                 <fieldset class="date-picker">
                     <legend>01 · Выберите дату</legend>
-                    <div class="quick-dates">
+                    <div class="quick-dates" @focusin="$event.target.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' })">
                         @for($offset=0;$offset<7;$offset++)
                             @php
                                 $day = now()->addDays($offset);
@@ -60,5 +60,5 @@
             </form>
         </aside>
     </div>
-    <div class="mobile-booking-bar" x-show="!formVisible" x-cloak><div><span class="muted">{{ $canBook ? $start.':00–'.$end.':00' : 'Выберите часы' }}</span><strong>{{ $canBook ? number_format((float) $total, 2, ',', ' ').' ₽' : number_format((float) $studio->price_per_hour, 2, ',', ' ').' ₽ / ч.' }}</strong></div><a class="button small" href="#booking-form">К выбору времени ↓</a></div>
+    <div class="mobile-booking-bar glass glass--dense" x-show="!formVisible" x-cloak><div><span class="muted">{{ $canBook ? $start.':00–'.$end.':00' : 'Выберите часы' }}</span><strong>{{ $canBook ? number_format((float) $total, 2, ',', ' ').' ₽' : number_format((float) $studio->price_per_hour, 2, ',', ' ').' ₽ / ч.' }}</strong></div><a class="button small" href="#booking-form">К выбору времени ↓</a></div>
 </div>
