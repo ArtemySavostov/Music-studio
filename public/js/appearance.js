@@ -18,7 +18,7 @@
     const apply = () => {
         const resolved = preference === 'system' ? (system.matches ? 'dark' : 'light') : preference;
         document.documentElement.dataset.theme = resolved;
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', resolved === 'dark' ? '#101d19' : '#f7f6f1');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', resolved === 'dark' ? '#17191c' : '#f7f6f1');
         if (appearance) { appearance.preference = preference; appearance.resolved = resolved; }
     };
     const favoritesChanged = () => window.dispatchEvent(new CustomEvent('studio-favorites'));
