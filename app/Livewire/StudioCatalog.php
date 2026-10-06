@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Studio;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -28,16 +29,30 @@ class StudioCatalog extends Component
     #[Url(history: true)]
     public string $maxPrice = '';
 
+    #[Url(history: true)]
+    public bool $favoritesOnly = false;
+
+    /** @var list<int> */
+    public array $favoriteIds = [];
+
+    /** @param list<int> $ids */
+    public function restoreFavorites(array $ids): void
+    {
+        // Initial browser hydration must preserve the page restored from the URL.
+        $this->favoriteIds = $ids;
+    }
+
     public function clearFilters(): void
     {
-        $this->reset('search', 'piano', 'sort', 'minPrice', 'maxPrice');
+        $this->reset('search', 'piano', 'sort', 'minPrice', 'maxPrice', 'favoritesOnly');
         $this->resetValidation();
         $this->resetPage();
     }
 
     public function updated(string $property): void
     {
-        if (in_array($property, ['search', 'piano', 'sort', 'minPrice', 'maxPrice'])) {
+        if (in_array($property, ['search', 'piano', 'sort', 'minPrice', 'maxPrice', 'favoritesOnly'])
+            || ($property === 'favoriteIds' && $this->favoritesOnly)) {
             $this->resetPage();
         }
     }
@@ -57,7 +72,11 @@ class StudioCatalog extends Component
         );
         $validPrices = $validator->passes();
         $this->setErrorBag($validator->errors());
+        $validFavorites = Validator::make(['ids' => $this->favoriteIds], [
+            'ids' => 'array|max:200', 'ids.*' => 'integer|min:1|distinct',
+        ])->passes();
         $studios = Studio::query()->where('is_active', true)
+            ->when($this->favoritesOnly, fn ($q) => $q->whereIn('id', $validFavorites ? $this->favoriteIds : []))
             ->when($this->search !== '', fn ($q) => $q->where('name', 'like', '%'.mb_substr($this->search, 0, 100).'%'))
             ->when($this->piano, fn ($q) => $q->where('has_piano', true))
             ->when($validPrices && $this->minPrice !== '', fn ($q) => $q->where('price_per_hour', '>=', $this->minPrice))
@@ -66,6 +85,9 @@ class StudioCatalog extends Component
             ->orderBy('id')
             ->paginate(9);
 
-        return view('livewire.studio-catalog', compact('studios'))->layout('layouts.app', ['title' => 'Студии']);
+        $nextBooking = Auth::user()?->booking()->where('status', 'confirmed')->where('ends_at', '>', now())
+            ->with('studio')->orderBy('starts_at')->first();
+
+        return view('livewire.studio-catalog', compact('studios', 'nextBooking'))->layout('layouts.app', ['title' => 'Студии']);
     }
 }

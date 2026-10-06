@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#183d36">
         <title>{{ $title ?? 'Студии' }} — Тон</title>
+        <script src="{{ asset('js/appearance.js') }}?v={{ filemtime(public_path('js/appearance.js')) }}"></script>
         <link rel="stylesheet" href="{{ asset('css/studio.css') }}?v={{ filemtime(public_path('css/studio.css')) }}">
         @livewireStyles
     </head>
@@ -23,6 +24,16 @@
                 @endauth
             </nav>
             <div class="header-account">
+                <details class="theme-menu" x-data @keydown.escape.prevent.stop="$el.open = false" @click.outside="$el.open = false">
+                    <summary aria-label="Оформление" title="Оформление"><span aria-hidden="true" x-text="$store.appearance.resolved === 'dark' ? '☾' : '☀'">☀</span></summary>
+                    <div class="theme-options glass glass--dense" role="group" aria-label="Тема интерфейса">
+                        <p class="eyebrow">ОФОРМЛЕНИЕ</p>
+                        @foreach(['light' => 'Светлая', 'dark' => 'Тёмная', 'system' => 'Как в системе'] as $mode => $label)
+                            <button type="button" aria-label="{{ $label }}" :aria-pressed="$store.appearance.preference === '{{ $mode }}'" @click="$store.appearance.set('{{ $mode }}'); $el.closest('details').open = false">{{ $label }}<span aria-hidden="true" x-show="$store.appearance.preference === '{{ $mode }}'">✓</span></button>
+                        @endforeach
+                        <p class="form-hint" x-cloak x-show="!$store.appearance.persistent">Браузер не разрешил сохранение. Тема изменена только для этой страницы.</p>
+                    </div>
+                </details>
                 @auth
                     <span class="user-name">{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">

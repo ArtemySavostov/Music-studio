@@ -9,6 +9,7 @@
             <p class="eyebrow">ПРОСТРАНСТВО ДЛЯ МУЗЫКИ</p>
             <h1>{{ $studio->name }}</h1>
             <p class="detail-description">{{ $studio->description ?: 'Приходите репетировать, сочинять и искать своё звучание.' }}</p>
+            <div class="detail-actions">@include('partials.favorite-button', ['studio' => $studio])</div>
             <div class="features"><span>◷ 10:00–22:00</span><span>♫ {{ $studio->has_piano ? 'Есть пианино' : 'Без пианино' }}</span><span>От 1 часа</span></div>
             <div class="detail-note"><h2>Время для вашего звучания</h2><p>Выберите дату и свободные часы. Итоговая стоимость появится сразу, а подтверждённая репетиция сохранится в вашем кабинете.</p></div>
         </section>
