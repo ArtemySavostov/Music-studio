@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Booking;
 use App\Models\Studio;
 use App\Services\BookingService;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -51,9 +52,19 @@ class StudioBooking extends Component
         $this->redirectRoute('bookings');
     }
 
-    public function render()
+    public function updatedStart(): void
     {
-        abort_unless($this->studio->fresh()?->is_active, 404);
+        // Keep at least one hour selected when moving the start time forward.
+        if ($this->end <= $this->start && $this->start >= 10 && $this->start <= 21) {
+            $this->end = $this->start + 1;
+        }
+    }
+
+    public function render(): View
+    {
+        $studio = $this->studio->fresh();
+        abort_unless($studio?->is_active, 404);
+        $this->studio = $studio;
         $occupied = Booking::where('studio_id', $this->studio->id)
             ->where('status', 'confirmed')->whereDate('starts_at', $this->date)
             ->orderBy('starts_at')->get();

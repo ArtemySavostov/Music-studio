@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Studio;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,14 +17,14 @@ class StudioCatalog extends Component
 
     public string $sort = 'name';
 
-    public function updated($property): void
+    public function updated(string $property): void
     {
         if (in_array($property, ['search', 'piano', 'sort'])) {
             $this->resetPage();
         }
     }
 
-    public function render()
+    public function render(): View
     {
         $studios = Studio::query()->where('is_active', true)
             ->when($this->search !== '', fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'))

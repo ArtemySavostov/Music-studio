@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -10,7 +11,7 @@ class MyBookings extends Component
 {
     use WithPagination;
 
-    public function render()
+    public function render(): View
     {
         abort_unless(Auth::check(), 401);
 

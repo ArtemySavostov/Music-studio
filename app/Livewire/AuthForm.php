@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -56,7 +57,7 @@ class AuthForm extends Component
         $this->redirectIntended(route('home'));
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.auth-form')->layout('layouts.app', ['title' => $this->register ? 'Регистрация' : 'Вход']);
     }

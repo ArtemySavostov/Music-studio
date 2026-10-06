@@ -43,7 +43,7 @@
                     <label>
                         Окончание
                         <select wire:model.live="end">
-                            @for($hour=11;$hour<=22;$hour++)
+                            @for($hour=max(11, $start + 1);$hour<=22;$hour++)
                                 <option value="{{ $hour }}">{{ $hour }}:00</option>
                             @endfor
                         </select>
