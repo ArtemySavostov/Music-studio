@@ -59,6 +59,35 @@ test('guest is sent to login before booking', function () {
     $this->assertDatabaseCount('bookings', 0);
 });
 
+test('selected session is restored after signing in', function () {
+    $studio = Studio::factory()->create();
+    $date = now()->addDays(3)->format('Y-m-d');
+    Livewire::test(StudioBooking::class, ['studio' => $studio])
+        ->set('date', $date)->set('start', 18)->set('end', 20)
+        ->call('book')->assertRedirect(route('login'));
+
+    $user = User::factory()->create(['password' => 'Studio-test-123']);
+    Livewire::test(AuthForm::class)
+        ->set('email', $user->email)->set('password', 'Studio-test-123')
+        ->call('submit')->assertHasNoErrors()
+        ->assertRedirect(route('studios.show', $studio));
+    $this->assertAuthenticatedAs($user);
+    Livewire::test(StudioBooking::class, ['studio' => $studio])
+        ->assertSet('date', $date)->assertSet('start', 18)->assertSet('end', 20);
+    expect(session()->has('booking.draft'))->toBeFalse();
+});
+
+test('a draft is not applied to another studio', function () {
+    $studio = Studio::factory()->create();
+    Livewire::test(StudioBooking::class, ['studio' => $studio])
+        ->set('start', 18)->set('end', 20)->call('book');
+
+    $this->actingAs(User::factory()->create());
+    Livewire::test(StudioBooking::class, ['studio' => Studio::factory()->create()])
+        ->assertSet('start', 10)->assertSet('end', 11);
+    expect(session()->has('booking.draft'))->toBeTrue();
+});
+
 test('registration signs the user in', function () {
     Livewire::test(AuthForm::class, ['register' => true])
         ->set('name', 'Музыкант')

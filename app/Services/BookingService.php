@@ -11,13 +11,14 @@ use Illuminate\Validation\ValidationException;
 
 class BookingService
 {
+    /** @param array{studio_id: int, starts_at: string, ends_at: string} $data */
     public function create(User $user, array $data): Booking
     {
         $startsAt = Carbon::parse($data['starts_at']);
         $endsAt = Carbon::parse($data['ends_at']);
 
         if (
-            !$startsAt->isSameDay($endsAt)
+            ! $startsAt->isSameDay($endsAt)
             || $startsAt->hour < 10
             || $endsAt->hour > 22
             || $startsAt->minute !== 0
@@ -40,7 +41,7 @@ class BookingService
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if (!$studio->is_active) {
+            if (! $studio->is_active) {
                 throw ValidationException::withMessages([
                     'studio_id' => ['Комната недоступна для бронирования.'],
                 ]);
@@ -60,12 +61,7 @@ class BookingService
 
             $hours = (int) $startsAt->diffInHours($endsAt);
 
-            [$rubles, $kopecks] = explode('.', $studio->price_per_hour);
-            $hourlyPrice = (int) $rubles * 100 + (int) $kopecks;
-            $totalKopecks = $hourlyPrice * $hours;
-
-            $totalPrice = intdiv($totalKopecks, 100)
-                .'.'.str_pad((string) ($totalKopecks % 100), 2, '0', STR_PAD_LEFT);
+            $totalPrice = $studio->priceForHours($hours);
 
             return Booking::create([
                 'user_id' => $user->id,
