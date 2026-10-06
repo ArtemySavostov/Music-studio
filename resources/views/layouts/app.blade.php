@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="{{ asset('css/studio.css') }}?v={{ filemtime(public_path('css/studio.css')) }}">
         @livewireStyles
     </head>
-    <body>
+    <body x-data="{ connectionFailed: false }" @studio-connection.window="connectionFailed = $event.detail.failed">
         <a class="skip-link" href="#main">Перейти к содержимому</a>
         <header class="header">
             <a class="brand" href="{{ route('home') }}" aria-label="Тон — главная">
@@ -34,6 +34,10 @@
             </nav>
         </header>
         <main id="main" class="container">
+            <div class="connection-notice" x-show="connectionFailed" x-cloak role="alert">
+                <span>Не удалось связаться с сервером. Проверьте соединение и повторите действие. Перед повторной отправкой брони проверьте «Мои бронирования».</span>
+                <button type="button" class="text-button" @click="connectionFailed = false" aria-label="Закрыть сообщение о соединении">Закрыть ×</button>
+            </div>
             @if(session('success'))
                 <div class="notice" role="status">{{ session('success') }}</div>
             @endif
@@ -44,6 +48,7 @@
             <span>Место, где звучат ваши идеи.</span>
             <span>Ежедневно · 10:00–22:00</span>
         </footer>
+        <script src="{{ asset('js/studio.js') }}?v={{ filemtime(public_path('js/studio.js')) }}"></script>
         @livewireScripts
     </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Studio;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,10 @@ class AuthForm extends Component
 
     public function render(): View
     {
-        return view('livewire.auth-form')->layout('layouts.app', ['title' => $this->register ? 'Регистрация' : 'Вход']);
+        $draft = session('booking.draft');
+        $draftStudio = is_array($draft) ? Studio::whereKey($draft['studio_id'] ?? null)->where('is_active', true)->first() : null;
+
+        return view('livewire.auth-form', compact('draft', 'draftStudio'))
+            ->layout('layouts.app', ['title' => $this->register ? 'Регистрация' : 'Вход']);
     }
 }

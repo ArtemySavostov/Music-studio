@@ -19,8 +19,8 @@ class BookingService
 
         if (
             ! $startsAt->isSameDay($endsAt)
-            || $startsAt->hour < 10
-            || $endsAt->hour > 22
+            || $startsAt->hour < AvailabilityService::OPEN_HOUR
+            || $endsAt->hour > AvailabilityService::CLOSE_HOUR
             || $startsAt->minute !== 0
             || $startsAt->second !== 0
             || $endsAt->minute !== 0

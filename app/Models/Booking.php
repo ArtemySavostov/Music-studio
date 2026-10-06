@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property Carbon $starts_at
+ * @property Carbon $ends_at
+ */
 #[Fillable(['user_id', 'studio_id', 'starts_at', 'ends_at', 'total_price', 'status'])]
 class Booking extends Model
 {
