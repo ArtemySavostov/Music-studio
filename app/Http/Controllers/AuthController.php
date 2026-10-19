@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,39 +12,40 @@ class AuthController extends Controller
 {
     public function register(Request $request): JsonResponse
     {
-        $data = $request -> validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
         ]);
         $user = User::create($data);
         $token = $user->createToken('api')->plainTextToken;
+
         return response()->json([
             'user' => $user,
             'token' => $token,
-        ], 201); 
+        ], 201);
     }
 
     public function login(Request $request): JsonResponse
-{
-    $data = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|string',
-    ]);
+    {
+        $data = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-    $user = User::where('email', $data['email'])->first();
+        $user = User::where('email', $data['email'])->first();
 
-    if (!$user || !Hash::check($data['password'], $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['Неверный email или пароль.'],
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['Неверный email или пароль.'],
+            ]);
+        }
+
+        $token = $user->createToken('api')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
         ]);
     }
-
-    $token = $user->createToken('api')->plainTextToken;
-
-    return response()->json([
-        'user' => $user,
-        'token' => $token,
-    ]);
-}
 }

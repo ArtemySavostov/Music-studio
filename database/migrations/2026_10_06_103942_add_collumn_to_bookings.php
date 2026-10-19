@@ -18,7 +18,7 @@ return new class extends Migration
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
             $table->string('status')->default('confirmed');
-            
+
             $table->index(['studio_id', 'starts_at', 'ends_at']);
         });
     }
